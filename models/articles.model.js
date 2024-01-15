@@ -11,7 +11,7 @@ exports.fetchArticleById = (id) => {
 }
 
 exports.fetchArticles = () => {
-    const query = `SELECT * FROM articles`
+    const query = `SELECT * FROM articles ORDER BY created_at DESC`
     return db.query(query).then(({rows}) => {
         const newArr = rows.map(article => {
             let counter = 0

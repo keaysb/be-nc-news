@@ -82,5 +82,11 @@ describe('/api', () => {
                 })
             })
         })
+        it('200: GET all articles should be sorted by date by default (desc)', () => {
+            return supertest(app).get('/api/articles').expect(200).then(res => {
+                const {articles} = res.body
+                expect(articles).toBeSortedBy('created_at', {descending : true})
+            })
+        })
     })
 })
