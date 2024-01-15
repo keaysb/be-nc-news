@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const supertest = require("supertest");
 const app = require("../app");
+const jsonFile = require('../endpoints.json')
 
 beforeAll(() => {
   return seed(data);
@@ -13,6 +14,12 @@ afterAll(() => {
 });
 
 describe('/api', () => {
+    it('200: responds with all available endpoints', () => {
+        return supertest(app).get('/api').expect(200).then((res) => {
+            const {endpoints_available} = res.body
+            expect(jsonFile).toEqual(endpoints_available)
+        })
+    })
     describe('GET /topics', () => {
         it('200: GET all topics', () => {
             return supertest(app).get('/api/topics').expect(200).then((res) => {
