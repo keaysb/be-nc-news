@@ -53,6 +53,18 @@ describe('/api', () => {
                       })
                 })
             })
+            it('400: Bad Request when attempting to GET article', () => {
+                return supertest(app).get('/api/article/abc').expect(400).then((res) => {
+                    const {msg} = res.body
+                    expect(msg).toBe('Bad Request')
+                })
+            })
+            it('404: Not Found when attempting to GET article', () => {
+                return supertest(app).get('/api/article/10000').expect(404).then((res) => {
+                    const {msg} = res.body
+                    expect(msg).toBe('Not Found')
+                })
+            })
         })
     })
 })
