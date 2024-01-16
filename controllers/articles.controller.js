@@ -20,4 +20,5 @@ exports.getCommentsById = (req, res, next) => {
     fetchCommentsById(article_id).then(comments => {
         res.status(200).send({comments})
     })
+    .catch(next)
 }

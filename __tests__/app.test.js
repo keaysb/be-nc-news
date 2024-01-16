@@ -86,6 +86,18 @@ describe('/api', () => {
                         expect(comments).toBeSortedBy('created_at', {descending : true})
                     })
                 })
+                it('400: Bad request when attempting to GET comments by article_id', () => {
+                    return supertest(app).get('/api/articles/abc/comments').expect(400).then(res => {
+                        const {msg} = res.body
+                        expect(msg).toBe('Bad Request')
+                    })
+                })
+                it('404: Not found when attempting to GET comments by article_id', () => {
+                    return supertest(app).get('/api/articles/100000/comments').expect(404).then(res => {
+                        const {msg} = res.body
+                        expect(msg).toBe('Not Found')
+                    })
+                })
             })
         })
         it('200: GET all articles', () => {
