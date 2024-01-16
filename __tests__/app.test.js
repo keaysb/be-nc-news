@@ -80,10 +80,16 @@ describe('/api', () => {
                           })
                     })
                 })
-                it('200: SORT all comments by date (DESC)', () => {
+                it('200: GET all comments from specific article id when no related comments', () => {
                     return supertest(app).get('/api/articles/1/comments').expect(200).then(res => {
                         const {comments} = res.body
                         expect(comments).toBeSortedBy('created_at', {descending : true})
+                    })
+                })
+                it('200: SORT all comments by date (DESC)', () => {
+                    return supertest(app).get('/api/articles/7/comments').expect(200).then(res => {
+                        const {comments} = res.body
+                        expect(comments).toEqual([])
                     })
                 })
                 it('400: Bad request when attempting to GET comments by article_id', () => {
@@ -112,7 +118,7 @@ describe('/api', () => {
                     expect(article).toHaveProperty("created_at", expect.any(String))
                     expect(article).toHaveProperty("article_img_url", expect.any(String))
                     expect(article).toHaveProperty("votes", expect.any(Number))
-                    expect(article).toHaveProperty("comment_count", expect.any(String))
+                    expect(article).toHaveProperty("comment_count", expect.any(Number))
                     expect(article).not.toHaveProperty('body')
                 })
             })
