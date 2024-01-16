@@ -32,3 +32,10 @@ exports.fetchCommentsById = (id) => {
         return rows
     })
 }
+
+exports.insertCommentById = (id, commentData) => {
+    const query = `INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *;`
+    return db.query(query, [commentData.body, id, commentData.username]).then(({rows}) => {
+        return rows[0]
+    })
+}
