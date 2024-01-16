@@ -1,4 +1,4 @@
-const {fetchArticleById, fetchArticles, fetchCommentsById} = require('../models/articles.model')
+const {fetchArticleById, fetchArticles, fetchCommentsById, insertCommentById} = require('../models/articles.model')
 const {checkExists} = require('../utils/utils')
 
 exports.getArticleById = (req, res, next) => {
@@ -25,4 +25,11 @@ exports.getCommentsById = (req, res, next) => {
         res.status(200).send({comments})
     })
     .catch(next)
+}
+
+exports.postCommentById = (req, res, next) => {
+    const {article_id} = req.params
+    insertCommentById(article_id, req.body).then(comment => {
+        res.status(201).send({comment})
+    }).catch(next)
 }
