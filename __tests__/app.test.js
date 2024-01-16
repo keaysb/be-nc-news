@@ -65,6 +65,40 @@ describe('/api', () => {
                     expect(msg).toBe('Not Found')
                 })
             })
+            describe('/comments', () => {
+                it('200: GET all comments from specific article id', () => {
+                    return supertest(app).get('/api/articles/6/comments').expect(200).then(res => {
+                        const {comments} = res.body
+                        expect(comments.length).toBe(1)
+                        expect(comments[0]).toEqual({
+                            comment_id: 16,
+                            body: "This is a bad article name",
+                            votes: 1,
+                            author: "butter_bridge",
+                            article_id: 6,
+                            created_at: '2020-10-11T15:23:00.000Z'
+                          })
+                    })
+                })
+                it('200: SORT all comments by date (DESC)', () => {
+                    return supertest(app).get('/api/articles/1/comments').expect(200).then(res => {
+                        const {comments} = res.body
+                        expect(comments).toBeSortedBy('created_at', {descending : true})
+                    })
+                })
+                it('400: Bad request when attempting to GET comments by article_id', () => {
+                    return supertest(app).get('/api/articles/abc/comments').expect(400).then(res => {
+                        const {msg} = res.body
+                        expect(msg).toBe('Bad Request')
+                    })
+                })
+                it('404: Not found when attempting to GET comments by article_id', () => {
+                    return supertest(app).get('/api/articles/100000/comments').expect(404).then(res => {
+                        const {msg} = res.body
+                        expect(msg).toBe('Not Found')
+                    })
+                })
+            })
         })
         it('200: GET all articles', () => {
             return supertest(app).get('/api/articles').expect(200).then(res => {
@@ -88,5 +122,6 @@ describe('/api', () => {
                 expect(articles).toBeSortedBy('created_at', {descending : true})
             })
         })
+
     })
 })
