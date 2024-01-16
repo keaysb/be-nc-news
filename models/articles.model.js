@@ -11,33 +11,24 @@ exports.fetchArticleById = (id) => {
 }
 
 exports.fetchArticles = () => {
-    const query = `SELECT * FROM articles ORDER BY created_at DESC`
+    const query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+    FROM articles 
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id 
+    GROUP BY articles.article_id
+    ORDER BY articles.created_at 
+    DESC;`
     return db.query(query).then(({rows}) => {
-        const newArr = rows.map(article => {
-            let counter = 0
-            delete article.body
-            return db.query(`SELECT * FROM comments`).then(res => {
-                const comRow = res.rows
-                comRow.forEach(com => {
-                    if (com.article_id === article.article_id){
-                        counter++
-                    }
-                })
-                article.comment_count = counter
-                return article
-            })
+        rows.forEach(article => {
+            article.comment_count = Number(article.comment_count)
         })
-        
-        return Promise.all(newArr)
+        return rows
     })
 }
 
 exports.fetchCommentsById = (id) => {
     const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`
     return db.query(query, [id]).then(({rows}) => {
-        if (rows.length === 0){
-            return Promise.reject({status: 404, msg: 'Not Found'})
-        }
         return rows
     })
 }

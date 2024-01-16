@@ -22,8 +22,8 @@ app.get('/api/articles', getArticles)
 
 app.get('/api/articles/:article_id/comments', getCommentsById)
 
-app.use(handleCustomErrors.handleCustomErrors);
-app.use(handlePsqlErrors.handlePsqlErrors);
-app.use(handleServerErrors.handleServerErrors);
+app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
+app.use(handleServerErrors);
 
 module.exports = app
