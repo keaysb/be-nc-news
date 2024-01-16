@@ -31,3 +31,10 @@ exports.fetchArticles = () => {
         return Promise.all(newArr)
     })
 }
+
+exports.fetchCommentsById = (id) => {
+    const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`
+    return db.query(query, [id]).then(({rows}) => {
+        return rows
+    })
+}
