@@ -46,7 +46,7 @@
     "description": "serves an array of a all comments at that specific id",
     "queries": [],
     "exampleResponse": {
-      "comments":        {
+      "comments": {
         "article_id": 6,
         "title": "A",
         "topic": "mitch",
