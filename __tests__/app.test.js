@@ -113,38 +113,73 @@ describe("/api", () => {
             expect(msg).toBe("Not Found");
           });
       });
-    //   it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated article at the specified id', () => {
-    //     const votesObj = { inc_votes : 1 }
-    //     return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
-    //         const {article} = res.body
-    //         expect(article).toEqual({
-    //             article_id: 1,
-    //             title: 'Living in the shadow of a great man',
-    //             topic: 'mitch',
-    //             author: 'butter_bridge',
-    //             body: 'I find this existence challenging',
-    //             created_at: '2020-07-09T20:11:00.000Z',
-    //             votes: 101,
-    //             article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
-    //           })
-    //     })
-    //   })
-    //   it('200: returns a 200 status code, PATCH votes property by requested amount (decrease) and returns the updated article at the specified id', () => {
-    //     const votesObj = { inc_votes : -11 }
-    //     return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
-    //         const {article} = res.body
-    //         expect(article).toEqual({
-    //             article_id: 1,
-    //             title: 'Living in the shadow of a great man',
-    //             topic: 'mitch',
-    //             author: 'butter_bridge',
-    //             body: 'I find this existence challenging',
-    //             created_at: '2020-07-09T20:11:00.000Z',
-    //             votes: 90,
-    //             article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
-    //           })
-    //     })
-    //   })
+      it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated article at the specified id', () => {
+        const votesObj = { inc_votes : 1 }
+        return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
+            const {article} = res.body
+            expect(article).toEqual({
+                article_id: 1,
+                title: 'Living in the shadow of a great man',
+                topic: 'mitch',
+                author: 'butter_bridge',
+                body: 'I find this existence challenging',
+                created_at: '2020-07-09T20:11:00.000Z',
+                votes: 101,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+              })
+        })
+      })
+      it('200: returns a 200 status code, PATCH votes property by requested amount (decrease) and returns the updated article at the specified id', () => {
+        const votesObj = { inc_votes : -11 }
+        return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
+            const {article} = res.body
+            expect(article).toEqual({
+                article_id: 1,
+                title: 'Living in the shadow of a great man',
+                topic: 'mitch',
+                author: 'butter_bridge',
+                body: 'I find this existence challenging',
+                created_at: '2020-07-09T20:11:00.000Z',
+                votes: 90,
+                article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+              })
+        })
+      })
+      it('400: returns a 400 status code, no object property or property data is sent to the PATCH request', () => {
+        const votesObj = {}
+        return supertest(app).patch('/api/articles/1').send(votesObj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toEqual('Missing value on NON NULL property')
+        })
+      })
+      it('400: returns a 400 status code, bad property name is sent to the PATCH request', () => {
+        const votesObj = {votes: 1}
+        return supertest(app).patch('/api/articles/1').send(votesObj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toEqual('Missing value on NON NULL property')
+        })
+      })
+      it('400: returns a 400 status code, bad property data is sent to the PATCH request', () => {
+        const votesObj = {inc_votes: 'abc'}
+        return supertest(app).patch('/api/articles/1').send(votesObj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toEqual('Bad Request')
+        })
+      })
+      it('404: returns a 404 status code, no id is found when attempting to PATCH request', () => {
+        const votesObj = {inc_votes: '2'}
+        return supertest(app).patch('/api/articles/1000000').send(votesObj).expect(404).then(res => {
+            const {msg} = res.body
+            expect(msg).toEqual('Not Found')
+        })
+      })
+      it('400: returns a 400 status code, bad id is used when attempting to PATCH request', () => {
+        const votesObj = {inc_votes: '2'}
+        return supertest(app).patch('/api/articles/abc').send(votesObj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toEqual('Bad Request')
+        })
+      })
       describe("/comments", () => {
         it("200: GET all comments from specific article id", () => {
           return supertest(app)
