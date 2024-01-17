@@ -40,9 +40,9 @@ exports.insertCommentById = (id, commentData) => {
     })
 }
 
-// exports.updateArticleByArticleId = (id, votesData) => {
-//     const query = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`
-//     return db.query(query, [votesData, id]).then(({rows}) => {
-//         return rows[0]
-//         })
-// }
+exports.updateArticleByArticleId = (id, votesData) => {
+    const query = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`
+    return db.query(query, [votesData, id]).then(({rows}) => {
+        return rows[0]
+        })
+}

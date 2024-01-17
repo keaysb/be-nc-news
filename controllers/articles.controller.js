@@ -1,5 +1,5 @@
-const { response } = require('../app')
-const {fetchArticleById, fetchArticles, fetchCommentsById, insertCommentById, } = require('../models/articles.model')
+const { response, path } = require('../app')
+const {fetchArticleById, fetchArticles, fetchCommentsById, insertCommentById, updateArticleByArticleId} = require('../models/articles.model')
 const {checkExists} = require('../utils/utils')
 
 exports.getArticleById = (req, res, next) => {
@@ -38,10 +38,13 @@ exports.postCommentById = (req, res, next) => {
     }).catch(next)
 }
 
-// exports.patchArticleByArticleId = (req, res, next) => {
-//     const {article_id} = req.params
-//     const {inc_votes} = req.body
-//     updateArticleByArticleId(article_id, inc_votes).then(article => {
-//         res.status(200).send({article})
-//     }).catch(next)
-// }
+exports.patchArticleByArticleId = (req, res, next) => {
+    const {article_id} = req.params
+    const {inc_votes} = req.body
+    const articleIdExistence = checkExists('articles', 'article_id', article_id)
+    const patchQuery = updateArticleByArticleId(article_id, inc_votes)
+    Promise.all([patchQuery, articleIdExistence]).then(response => {
+        const article = response[0]
+        res.status(200).send({article})
+    }).catch(next)
+}
