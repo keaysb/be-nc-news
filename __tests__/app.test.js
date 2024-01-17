@@ -267,6 +267,23 @@ describe("/api", () => {
                 expect(msg).toBe('Missing value on NON NULL property')
             })
         })
+        it('400: returns status code 400, returns error for missing username and body when attempting to POST', () => {
+            const commentIns = {}
+            return supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
+                const {msg} = res.body
+                expect(msg).toBe('Missing value on NON NULL property')
+            })
+        })
+        it('400: returns status code 400, returns error for bad username input (does not exist in users table) when attempting to POST', () => {
+            const commentIns = {
+                username: 'abcabc',
+                body: "It is good until chapter 10",
+              };
+            return supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
+                const {msg} = res.body
+                expect(msg).toBe('FOREIGN KEY VIOLATION, referenced row does not exist in the referenced table')
+            })
+        })
         it('400: returns status code 404, returns error for an id that does not exist when attempting to POST', () => {
             const commentIns = {
                 username: "icellusedkars",
