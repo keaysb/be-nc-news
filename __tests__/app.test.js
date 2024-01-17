@@ -42,6 +42,39 @@ describe("/api", () => {
     });
   });
   describe("GET /article", () => {
+    it("200: GET all articles", () => {
+        return supertest(app)
+          .get("/api/articles")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(13);
+            articles.forEach((article) => {
+              expect(article).toHaveProperty("article_id", expect.any(Number));
+              expect(article).toHaveProperty("title", expect.any(String));
+              expect(article).toHaveProperty("topic", expect.any(String));
+              expect(article).toHaveProperty("author", expect.any(String));
+              expect(article).toHaveProperty("created_at", expect.any(String));
+              expect(article).toHaveProperty(
+                "article_img_url",
+                expect.any(String)
+              );
+              expect(article).toHaveProperty("votes", expect.any(Number));
+              expect(article).toHaveProperty(
+                "comment_count",
+                expect.any(Number)
+              );
+              expect(article).not.toHaveProperty("body");
+            });
+          });
+      });
+      it("200: GET all articles should be sorted by date by default (desc)", () => {
+        return supertest(app).get("/api/articles").expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles).toBeSortedBy("created_at", { descending: true });
+          });
+      });
     describe("/:article_id", () => {
       it("200: GET article at specific id", () => {
         return supertest(app)
@@ -80,6 +113,38 @@ describe("/api", () => {
             expect(msg).toBe("Not Found");
           });
       });
+    //   it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated article at the specified id', () => {
+    //     const votesObj = { inc_votes : 1 }
+    //     return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
+    //         const {article} = res.body
+    //         expect(article).toEqual({
+    //             article_id: 1,
+    //             title: 'Living in the shadow of a great man',
+    //             topic: 'mitch',
+    //             author: 'butter_bridge',
+    //             body: 'I find this existence challenging',
+    //             created_at: '2020-07-09T20:11:00.000Z',
+    //             votes: 101,
+    //             article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    //           })
+    //     })
+    //   })
+    //   it('200: returns a 200 status code, PATCH votes property by requested amount (decrease) and returns the updated article at the specified id', () => {
+    //     const votesObj = { inc_votes : -11 }
+    //     return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
+    //         const {article} = res.body
+    //         expect(article).toEqual({
+    //             article_id: 1,
+    //             title: 'Living in the shadow of a great man',
+    //             topic: 'mitch',
+    //             author: 'butter_bridge',
+    //             body: 'I find this existence challenging',
+    //             created_at: '2020-07-09T20:11:00.000Z',
+    //             votes: 90,
+    //             article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+    //           })
+    //     })
+    //   })
       describe("/comments", () => {
         it("200: GET all comments from specific article id", () => {
           return supertest(app)
@@ -134,12 +199,12 @@ describe("/api", () => {
               expect(msg).toBe("Not Found");
             });
         });
-        it("200: returns status code 200, inserts new comment into table and returns the inserted comment", () => {
+        it("200: returns status code 200, POST new comment into table and returns the inserted comment", () => {
           const commentIns = {
             username: "icellusedkars",
             body: "It is good until chapter 10",
           };
-          supertest(app)
+          return supertest(app)
             .post("/api/articles/12/comments")
             .send(commentIns)
             .expect(201)
@@ -153,55 +218,40 @@ describe("/api", () => {
               expect(comment).toHaveProperty('created_at', expect.any(String));
             });
         });
-        it('400: returns status code 400, returns error for missing username', () => {
+        it('400: returns status code 400, returns error for missing username when attempting to POST', () => {
             const commentIns = {body: 'It is good until chapter 10'}
-            supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
+            return supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
                 const {msg} = res.body
                 expect(msg).toBe('Missing value on NON NULL property')
             })
         })
-        it('400: returns status code 400, returns error for missing body', () => {
+        it('400: returns status code 400, returns error for missing body when attempting to POST', () => {
             const commentIns = {username: 'icellusedkars'}
-            supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
+            return supertest(app).post('/api/articles/12/comments').send(commentIns).expect(400).then(res => {
                 const {msg} = res.body
                 expect(msg).toBe('Missing value on NON NULL property')
             })
         })
-      });
-      it("200: GET all articles", () => {
-        return supertest(app)
-          .get("/api/articles")
-          .expect(200)
-          .then((res) => {
-            const { articles } = res.body;
-            expect(articles.length).toBe(13);
-            articles.forEach((article) => {
-              expect(article).toHaveProperty("article_id", expect.any(Number));
-              expect(article).toHaveProperty("title", expect.any(String));
-              expect(article).toHaveProperty("topic", expect.any(String));
-              expect(article).toHaveProperty("author", expect.any(String));
-              expect(article).toHaveProperty("created_at", expect.any(String));
-              expect(article).toHaveProperty(
-                "article_img_url",
-                expect.any(String)
-              );
-              expect(article).toHaveProperty("votes", expect.any(Number));
-              expect(article).toHaveProperty(
-                "comment_count",
-                expect.any(Number)
-              );
-              expect(article).not.toHaveProperty("body");
-            });
-          });
-      });
-      it("200: GET all articles should be sorted by date by default (desc)", () => {
-        return supertest(app)
-          .get("/api/articles")
-          .expect(200)
-          .then((res) => {
-            const { articles } = res.body;
-            expect(articles).toBeSortedBy("created_at", { descending: true });
-          });
+        it('400: returns status code 404, returns error for an id that does not exist when attempting to POST', () => {
+            const commentIns = {
+                username: "icellusedkars",
+                body: "It is good until chapter 10",
+              };
+            return supertest(app).post('/api/articles/12000/comments').send(commentIns).expect(404).then(res => {
+                const {msg} = res.body
+                expect(msg).toBe('Not Found')
+            })
+        })
+        it('400: returns status code 400, returns error for bad id request when attempting to POST', () => {
+            const commentIns = {
+                username: "icellusedkars",
+                body: "It is good until chapter 10",
+              };
+            return supertest(app).post('/api/articles/abc/comments').send(commentIns).expect(400).then(res => {
+                const {msg} = res.body
+                expect(msg).toBe('Bad Request')
+            })
+        })
       });
     });
   });
