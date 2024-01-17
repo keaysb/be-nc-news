@@ -334,4 +334,20 @@ describe("/api", () => {
         })
     })
   })
+  describe('/users', () => {
+    it("200: return status code 200, GET all users (return all users within the table 'users')", () => {
+        return supertest(app).get('/api/users').expect(200).then(res => {
+            const {users} = res.body
+            expect(users.length).toBe(4)
+            users.forEach((user, index) => {
+                expect(user).toHaveProperty("username", expect.any(String));
+                expect(user).toHaveProperty("name", expect.any(String));
+                expect(user).toHaveProperty("avatar_url", expect.any(String));
+                for (const key in user) {
+                  expect(user[key]).toEqual(data.userData[index][key]);
+                }
+              });
+        })
+    })
+  })
 });

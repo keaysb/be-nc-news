@@ -12,6 +12,7 @@ const {getTopics} = require('./controllers/topics.controller')
 const {getApi} = require('./controllers/api.controller')
 const {getArticleById, getArticles, getCommentsById, postCommentById, patchArticleByArticleId} = require('./controllers/articles.controller')
 const {deleteCommentByCommentId} = require('./controllers/comments.controller')
+const {getUsers} = require('./controllers/users.controller')
 
 app.get('/api/topics', getTopics)
 
@@ -28,6 +29,8 @@ app.post('/api/articles/:article_id/comments', postCommentById)
 app.patch('/api/articles/:article_id', patchArticleByArticleId)
 
 app.delete('/api/comments/:comment_id', deleteCommentByCommentId)
+
+app.get('/api/users', getUsers)
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
