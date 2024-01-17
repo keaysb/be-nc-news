@@ -41,7 +41,7 @@ describe("/api", () => {
         });
     });
   });
-  describe("GET /article", () => {
+  describe("/article", () => {
     it("200: GET all articles", () => {
         return supertest(app)
           .get("/api/articles")
@@ -290,4 +290,31 @@ describe("/api", () => {
       });
     });
   });
+  describe('/comments', () => {
+    describe('/:comment_id', () => {
+        it('204: return status code 204, DELETE comment at specified comment id', () => {
+            return supertest(app).delete('/api/comments/2').expect(204).then(res => {
+                expect(res.body).toEqual({})
+            })
+        })
+        it('404: return status code 404, Error when attempting to DELETE comment at same comment_id which has been deleted', () => {
+            return supertest(app).delete('/api/comments/2').expect(404).then(res => {
+                const {msg} = res.body
+                expect(msg).toEqual('Not Found')
+            })
+        })
+        it('400: return status code 400, Bad id request when attempting to DELETE comment', () => {
+            return supertest(app).delete('/api/comments/abc').expect(400).then(res => {
+                const {msg} = res.body
+                expect(msg).toEqual('Bad Request')
+            })
+        })
+        it('404: return status code 404, Bad id request when attempting to DELETE comment', () => {
+            return supertest(app).delete('/api/comments/10000').expect(404).then(res => {
+                const {msg} = res.body
+                expect(msg).toEqual('Not Found')
+            })
+        })
+    })
+  })
 });
