@@ -41,7 +41,7 @@ describe("/api", () => {
         });
     });
   });
-  describe("/article", () => {
+  describe("/articles", () => {
     it("200: GET all articles", () => {
         return supertest(app)
           .get("/api/articles")
@@ -73,6 +73,28 @@ describe("/api", () => {
           .then((res) => {
             const { articles } = res.body;
             expect(articles).toBeSortedBy("created_at", { descending: true });
+          });
+      });
+      it("200: return status code 200, FILTER article data by specified topic", () => {
+        return supertest(app).get("/api/articles?topic=cats").expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(1)
+            expect(articles[0].topic).toBe("cats");
+          });
+      });
+      it("400: return status code 400, Invalid topic query", () => {
+        return supertest(app).get("/api/articles?topic=abc").expect(400)
+          .then((res) => {
+            const { msg } = res.body;
+            expect(msg).toBe('Bad Request')
+          });
+      });
+      it("400: return status code 400, Empty topic query", () => {
+        return supertest(app).get("/api/articles?topic=").expect(400)
+          .then((res) => {
+            const { msg } = res.body;
+            expect(msg).toBe('Bad Request')
           });
       });
     describe("/:article_id", () => {
