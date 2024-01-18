@@ -1,25 +1,10 @@
 const db = require('../db/connection')
 
-exports.fetchArticleById = (id, comment_count) => {
-    let query = `SELECT articles.*`
-
-    if (comment_count === undefined){
-        query += ` FROM articles`
-    } else if(comment_count === ""){
-        query += `, CAST(COUNT(comments.article_id) AS int) AS comment_count 
-        FROM articles 
-        LEFT JOIN comments 
-        ON articles.article_id = comments.article_id`
-    } else {
-        return Promise.reject({code: '22P02'})
-    }
-
-    query += ` WHERE articles.article_id = $1`
-
-
-    if (comment_count === ""){
-        query += ` GROUP BY articles.article_id, comments.comment_id`
-    }
+exports.fetchArticleById = (id) => {
+    let query = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count 
+    FROM articles 
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id, comments.comment_id`
 
     return db.query(query, [id]).then(({rows}) => {
         if (rows.length === 0){
