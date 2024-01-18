@@ -14,7 +14,10 @@ exports.fetchArticleById = (id) => {
     })
 }
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
+    const allowedSortQuery = ['article_id', 'title', 'topic', 'author', 'created_at', 'votes', 'article_img_url', 'comment_count']
+    const allowedOrderQuery = ['ASC', 'DESC']
+
     let query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS int) AS comment_count 
     FROM articles 
     LEFT JOIN comments 
@@ -25,8 +28,13 @@ exports.fetchArticles = (topic) => {
         query += ` WHERE articles.topic = '${topic}'`
     }
 
-    query += `GROUP BY articles.article_id ORDER BY articles.created_at 
-    DESC;`
+    query += ` GROUP BY articles.article_id`
+
+    if (!allowedSortQuery.includes(sort_by) || !allowedOrderQuery.includes(order.toUpperCase())){
+        return Promise.reject({ status: 400, msg: 'Bad Request' })
+    } else {
+        query += ` ORDER BY articles.${sort_by} ${order.toUpperCase()};`
+    }
 
     return db.query(query).then(({rows}) => {
         return rows

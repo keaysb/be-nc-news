@@ -10,10 +10,10 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    const {topic} = req.query
-    const fetchQuery = fetchArticles(topic)
+    const {topic, sort_by, order} = req.query
+    const fetchQuery = fetchArticles(topic, sort_by, order)
     if (topic !== undefined){
-        const topicsExistence = checkExists('topics', 'slug', topic)
+    const topicsExistence = checkExists('topics', 'slug', topic)
         Promise.all([fetchQuery, topicsExistence]).then(response => {
             const articles = response[0]
             res.status(200).send({articles})
