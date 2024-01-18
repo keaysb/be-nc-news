@@ -100,7 +100,7 @@ describe("/api", () => {
     describe("/:article_id", () => {
       it("200: GET article at specific id", () => {
         return supertest(app)
-          .get("/api/article/1")
+          .get("/api/articles/1")
           .expect(200)
           .then((res) => {
             const { article } = res.body;
@@ -119,7 +119,7 @@ describe("/api", () => {
       });
       it("400: Bad Request when attempting to GET article", () => {
         return supertest(app)
-          .get("/api/article/abc")
+          .get("/api/articles/abc")
           .expect(400)
           .then((res) => {
             const { msg } = res.body;
@@ -128,13 +128,36 @@ describe("/api", () => {
       });
       it("404: Not Found when attempting to GET article", () => {
         return supertest(app)
-          .get("/api/article/10000")
+          .get("/api/articles/10000")
           .expect(404)
           .then((res) => {
             const { msg } = res.body;
             expect(msg).toBe("Not Found");
           });
       });
+      it('200: returns a 200 status code, returns article with comment_count included', () => {
+        return supertest(app).get('/api/articles/6?comment_count').expect(200).then(res => {
+            const {article} = res.body
+            expect(article).toEqual(  {
+                article_id: 6,
+                title: "A",
+                topic: "mitch",
+                author: "icellusedkars",
+                body: "Delicious tin of cat food",
+                created_at: "2020-10-18T01:00:00.000Z",
+                votes: 0,
+                article_img_url:
+                  "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+                  comment_count: 1
+              })
+        })
+      })
+      it('400: returns a 400 status code, invalid comment_count query', () => {
+        return supertest(app).get('/api/articles/6?comment_count=abc').expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Bad Request')
+        })
+      })
       it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated article at the specified id', () => {
         const votesObj = { inc_votes : 1 }
         return supertest(app).patch('/api/articles/1').send(votesObj).expect(200).then(res => {
