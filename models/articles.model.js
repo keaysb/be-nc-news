@@ -10,14 +10,23 @@ exports.fetchArticleById = (id) => {
     })
 }
 
-exports.fetchArticles = () => {
-    const query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+exports.fetchArticles = (topic) => {
+    const allowedTopics = ['mitch', 'cats', 'paper']
+    let query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
     FROM articles 
     LEFT JOIN comments 
-    ON articles.article_id = comments.article_id 
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at 
+    ON articles.article_id = comments.article_id
+    `
+    if (!allowedTopics.includes(topic) && topic !== undefined){
+        return Promise.reject({code: '22P02'})
+    } else if (topic === undefined) {
+    } else{
+        query += ` WHERE articles.topic = '${topic}'`
+    }
+
+    query += `GROUP BY articles.article_id ORDER BY articles.created_at 
     DESC;`
+
     return db.query(query).then(({rows}) => {
         rows.forEach(article => {
             article.comment_count = Number(article.comment_count)
@@ -25,6 +34,7 @@ exports.fetchArticles = () => {
         return rows
     })
 }
+
 
 exports.fetchCommentsById = (id) => {
     const query = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`
