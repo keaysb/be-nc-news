@@ -1,7 +1,26 @@
 const db = require('../db/connection')
 
-exports.fetchArticleById = (id) => {
-    const query = `SELECT * FROM articles WHERE article_id = $1;`
+exports.fetchArticleById = (id, comment_count) => {
+    let query = `SELECT articles.*`
+
+    if (comment_count === undefined){
+        query += ` FROM articles`
+    } else if(comment_count === ""){
+        query += `, CAST(COUNT(comments.article_id) AS int) AS comment_count 
+        FROM articles 
+        LEFT JOIN comments 
+        ON articles.article_id = comments.article_id`
+    } else {
+        return Promise.reject({code: '22P02'})
+    }
+
+    query += ` WHERE articles.article_id = $1`
+
+
+    if (comment_count === ""){
+        query += ` GROUP BY articles.article_id, comments.comment_id`
+    }
+
     return db.query(query, [id]).then(({rows}) => {
         if (rows.length === 0){
             return Promise.reject({status: 404, msg: 'Not Found'})
@@ -12,7 +31,7 @@ exports.fetchArticleById = (id) => {
 
 exports.fetchArticles = (topic) => {
     const allowedTopics = ['mitch', 'cats', 'paper']
-    let query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count 
+    let query = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.article_id) AS int) AS comment_count 
     FROM articles 
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id
@@ -28,9 +47,6 @@ exports.fetchArticles = (topic) => {
     DESC;`
 
     return db.query(query).then(({rows}) => {
-        rows.forEach(article => {
-            article.comment_count = Number(article.comment_count)
-        })
         return rows
     })
 }
