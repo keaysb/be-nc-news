@@ -1,4 +1,5 @@
 const { response, path } = require('../app')
+const { articleData } = require('../db/data/test-data')
 const {fetchArticleById, fetchArticles, fetchCommentsById, insertCommentById, updateArticleByArticleId} = require('../models/articles.model')
 const {checkExists} = require('../utils/utils')
 
@@ -13,10 +14,18 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
     const {topic} = req.query
-    fetchArticles(topic).then(articles => {
-        res.status(200).send({articles})
-    })
-    .catch(next)
+    const fetchQuery = fetchArticles(topic)
+    if (topic !== undefined){
+        const topicsExistence = checkExists('topics', 'slug', topic)
+        Promise.all([fetchQuery, topicsExistence]).then(response => {
+            const articles = response[0]
+            res.status(200).send({articles})
+        }).catch(next)
+    } else {
+        fetchQuery.then(articles => {
+            res.status(200).send({articles})
+        }).catch(next)
+    }
 }
 
 exports.getCommentsById = (req, res, next) => {
