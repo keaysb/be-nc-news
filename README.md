@@ -3,8 +3,9 @@ This repository uses various endpoints to access different parts of the linked d
 
 Hosted Version: https://nc-news-1ldz.onrender.com
 
-*** The website used to host this API automatically spins down with inactivity so loading the site might take a while
+*** The website used to host this API automatically spins down with inactivity so loading the site and it's various pages may take a while. Please be patient.
 *** Use the endpoints to access the desired data (use the endpoint /api to see all current endpoints)
+*** Currently no front-end so use this extension to format the website in a readable way: https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en&pli=1 
 
 
 -Using Repository:
