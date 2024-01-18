@@ -83,18 +83,26 @@ describe("/api", () => {
             expect(articles[0].topic).toBe("cats");
           });
       });
+      it("200: return status code 200, valid topic but no articles associated with it", () => {
+        return supertest(app).get("/api/articles?topic=paper").expect(200)
+          .then((res) => {
+            const { articles } = res.body;
+            expect(articles.length).toBe(0)
+            expect(articles).toEqual([]);
+          });
+      });
       it("400: return status code 400, Invalid topic query", () => {
-        return supertest(app).get("/api/articles?topic=abc").expect(400)
+        return supertest(app).get("/api/articles?topic=abc").expect(404)
           .then((res) => {
             const { msg } = res.body;
-            expect(msg).toBe('Bad Request')
+            expect(msg).toBe('Not Found')
           });
       });
       it("400: return status code 400, Empty topic query", () => {
-        return supertest(app).get("/api/articles?topic=").expect(400)
+        return supertest(app).get("/api/articles?topic=").expect(404)
           .then((res) => {
             const { msg } = res.body;
-            expect(msg).toBe('Bad Request')
+            expect(msg).toBe('Not Found')
           });
       });
     describe("/:article_id", () => {
