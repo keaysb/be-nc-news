@@ -1,5 +1,3 @@
-const { response, path } = require('../app')
-const { articleData } = require('../db/data/test-data')
 const {fetchArticleById, fetchArticles, fetchCommentsById, insertCommentById, updateArticleByArticleId} = require('../models/articles.model')
 const {checkExists} = require('../utils/utils')
 
