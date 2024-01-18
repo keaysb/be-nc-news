@@ -121,8 +121,7 @@ describe("/api", () => {
               created_at: "2020-07-09T20:11:00.000Z",
               votes: 100,
               article_img_url:
-                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-              comment_count: 1
+                "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
             });
           });
       });
@@ -142,6 +141,17 @@ describe("/api", () => {
           .then((res) => {
             const { msg } = res.body;
             expect(msg).toBe("Not Found");
+          });
+      });
+      it("200: GET article at specific id with a new property 'comment_count", () => {
+        return supertest(app)
+          .get("/api/articles/1")
+          .expect(200)
+          .then((res) => {
+            const { article } = res.body;
+            expect(article).toMatchObject({
+              comment_count: 1
+            });
           });
       });
       it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated article at the specified id', () => {
