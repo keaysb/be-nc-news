@@ -25,7 +25,7 @@ describe("/api", () => {
             });
         });
     })
-  describe("GET /topics", () => {
+  describe("/topics", () => {
     describe('GET', () => {
         it("200: GET all topics", () => {
           return supertest(app)
@@ -43,6 +43,48 @@ describe("/api", () => {
               });
             });
         });
+    })
+    describe('POST', () => {
+      it('201: return status code 201, POST new topic to database', () => {
+        const topicObj = {
+          slug: "food",
+          description: "anything foody"
+        }
+        return supertest(app).post('/api/topics').send(topicObj).expect(201).then(res => {
+          const {topic} = res.body
+          expect(topic).toMatchObject({
+            slug: "food",
+            description: "anything foody"
+          })
+        })
+      })
+      it('201: return status code 201, POST new topic (description excluded)', () => {
+        const topicObj = {
+          slug: 'Mandatory'
+        }
+        return supertest(app).post('/api/topics').send(topicObj).expect(201).then(res => {
+          const {topic} = res.body
+          expect(topic).toMatchObject({
+            slug: "Mandatory"
+          })
+        })
+      })
+      it('400: return status code 400, Missing Non Null Property (slug)', () => {
+        const topicObj = {
+          description: "anything foody"
+        }
+        return supertest(app).post('/api/topics').send(topicObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('Missing value on NON NULL property')
+        })
+      })
+      it('400: return status code 400, Missing Non Null Property (Empty Object)', () => {
+        const topicObj = {}
+        return supertest(app).post('/api/topics').send(topicObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('Missing value on NON NULL property')
+        })
+      })
     })
   });
   describe("/articles", () => {
