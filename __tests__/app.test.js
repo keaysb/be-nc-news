@@ -157,6 +157,106 @@ describe("/api", () => {
               });
           });
     })
+    describe('POST', () => {
+      it('201: return status code 201, POST new article into database and return newly created article', () => {
+        const articleObj = {
+          title: 'The Cat and Mouse',
+          topic: 'cats',
+          author: 'rogersop',
+          body: 'My Favourite Show',
+          article_img_url: 'https://wallpapers.com/images/hd/tom-and-jerry-cat-and-mouse-mefpo05w7m11ubkh.jpg'
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(201).then(res => {
+          const {article} = res.body
+          expect(article).toMatchObject({
+            article_id: 14,
+            title: 'The Cat and Mouse',
+            topic: 'cats',
+            author: 'rogersop',
+            body: 'My Favourite Show',
+            votes: 0,
+            comment_count: 0,
+            article_img_url: 'https://wallpapers.com/images/hd/tom-and-jerry-cat-and-mouse-mefpo05w7m11ubkh.jpg'
+          })
+          expect(article).toHaveProperty("created_at", expect.any(String));
+        })
+      })
+      it('201: return status code 201, POST new article into database and return newly created article (no URL)', () => {
+        const articleObj = {
+          title: 'The Sponge',
+          topic: 'mitch',
+          author: 'rogersop',
+          body: 'My 2nd Favourite Show',
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(201).then(res => {
+          const {article} = res.body
+          expect(article).toMatchObject({
+            article_id: 15,
+            title: 'The Sponge',
+            topic: 'mitch',
+            author: 'rogersop',
+            body: 'My 2nd Favourite Show',
+            votes: 0,
+            comment_count: 0,
+            article_img_url: 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
+          })
+          expect(article).toHaveProperty("created_at", expect.any(String));
+        })
+      })
+      it('400: return status code 400, Missing Non Null Property (title)', () => {
+        const articleObj = {
+          topic: 'cats',
+          author: 'rogersop',
+          body: 'My 2nd Favourite Show',
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('Missing value on NON NULL property')
+        })
+      })
+      it('400: return status code 400, Missing Non Null Property (body)', () => {
+        const articleObj = {
+          title: 'The Sponge',
+          topic: 'cats',
+          author: 'rogersop'
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('Missing value on NON NULL property')
+        })
+      })
+      it('400: return status code 400, Invalid foreign key reference (topic)', () => {
+        const articleObj = {
+          title: 'The Sponge',
+          topic: 'pineapple',
+          author: 'rogersop',
+          body: 'My 2nd Favourite Show',
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('FOREIGN KEY VIOLATION, referenced row does not exist in the referenced table')
+        })
+      })
+      it('400: return status code 400, Invalid foreign key reference (author)', () => {
+        const articleObj = {
+          title: 'The Sponge',
+          topic: 'cats',
+          author: 'krabs',
+          body: 'My 2nd Favourite Show',
+        }
+        return supertest(app).post('/api/articles').send(articleObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('FOREIGN KEY VIOLATION, referenced row does not exist in the referenced table')
+        })
+      })
+      it('400: return status code 400, Empty Object', () => {
+        const articleObj = {}
+        return supertest(app).post('/api/articles').send(articleObj).expect(400).then(res => {
+          const {msg} = res.body
+          expect(msg).toBe('Missing value on NON NULL property')
+        })
+      })
+    })
     describe("/:article_id", () => {
         describe('GET', () => {
             it("200: GET article at specific id", () => {
@@ -334,7 +434,7 @@ describe("/api", () => {
             });
         })
         describe('POST', () => {
-            it("200: returns status code 200, POST new comment into table and returns the inserted comment", () => {
+            it("200: returns status code 200, POST new comment into database and returns the inserted comment", () => {
               const commentIns = {
                 username: "icellusedkars",
                 body: "It is good until chapter 10",
