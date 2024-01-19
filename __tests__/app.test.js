@@ -454,5 +454,26 @@ describe("/api", () => {
             })
         })
     })
+    describe('/:username', () => {
+        describe('GET', () => {
+            it("200: return status code 200, GET all users at specific username", () => {
+                return supertest(app).get('/api/users/butter_bridge').expect(200).then(res => {
+                    const {user} = res.body
+                    expect(user).toMatchObject(  {
+                        username: 'butter_bridge',
+                        name: 'jonny',
+                        avatar_url:
+                          'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+                      })
+                })
+            })
+            it("404: return status code 404, username Not Found", () => {
+                return supertest(app).get('/api/users/abcabc').expect(404).then(res => {
+                    const {msg} = res.body
+                    expect(msg).toBe('Not Found')
+                })
+            })
+        })
+    })
   })
 });
