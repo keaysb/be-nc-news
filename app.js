@@ -8,29 +8,9 @@ const {
     handleServerErrors,
   } = require('./error-handlers/index');
 
-const {getTopics} = require('./controllers/topics.controller')
-const {getApi} = require('./controllers/api.controller')
-const {getArticleById, getArticles, getCommentsById, postCommentById, patchArticleByArticleId} = require('./controllers/articles.controller')
-const {deleteCommentByCommentId} = require('./controllers/comments.controller')
-const {getUsers} = require('./controllers/users.controller')
+const apiRouter = require('./routes/api-router');
 
-app.get('/api/topics', getTopics)
-
-app.get('/api', getApi)
-
-app.get('/api/articles/:article_id', getArticleById)
-
-app.get('/api/articles', getArticles)
-
-app.get('/api/articles/:article_id/comments', getCommentsById)
-
-app.post('/api/articles/:article_id/comments', postCommentById)
-
-app.patch('/api/articles/:article_id', patchArticleByArticleId)
-
-app.delete('/api/comments/:comment_id', deleteCommentByCommentId)
-
-app.get('/api/users', getUsers)
+app.use('/api', apiRouter);
 
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
