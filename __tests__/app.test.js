@@ -454,7 +454,6 @@ describe("/api", () => {
             const votesobj = {inc_votes : -10 }
             return supertest(app).patch('/api/comments/4').send(votesobj).expect(200).then(res => {
               const {comment} = res.body
-              console.log(comment)
               expect(comment).toMatchObject({
                 comment_id: 4,
                 body: " I carry a log — yes. Is it funny to you? It is not to me.",
