@@ -6,3 +6,10 @@ exports.removeCommentById = (id) => {
         return rows[0]
     })
 }
+
+exports.updateCommentByCommentId = (id, votes) => {
+    const query = `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`
+    return db.query(query, [votes, id]).then(({rows}) => {
+        return rows[0]
+    })
+}
