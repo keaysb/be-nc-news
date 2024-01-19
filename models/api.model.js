@@ -1,5 +1,5 @@
-const jsonFile = require('../endpoints.json')
+const jsonFile = require("../endpoints.json");
 
 exports.fetchApi = async () => {
-    return jsonFile
-}
+  return jsonFile;
+};
