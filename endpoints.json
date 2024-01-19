@@ -146,5 +146,22 @@
         "created_at": "2020-02-23T12:01:00.000Z"
       }
     }
+  },
+  "POST /api/articles": {
+    "description": "serves an object of the newly created article",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 14,
+        "title": "The Cat and Mouse",
+        "topic": "cats",
+        "author": "rogersop",
+        "body": "My Favourite Show",
+        "created_at": "2024-01-19T15:22:51.998Z",
+        "votes": 0,
+        "article_img_url": "https://wallpapers.com/images/hd/tom-and-jerry-cat-and-mouse-mefpo05w7m11ubkh.jpg",
+        "comment_count": 0
+      }
+    }
   }
 }
