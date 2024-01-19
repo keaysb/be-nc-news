@@ -263,14 +263,14 @@ describe("/api", () => {
               })
             })
             it('404: returns a 404 status code, no id is found when attempting to PATCH request', () => {
-              const votesObj = {inc_votes: '2'}
+              const votesObj = {inc_votes: 2}
               return supertest(app).patch('/api/articles/1000000').send(votesObj).expect(404).then(res => {
                   const {msg} = res.body
                   expect(msg).toEqual('Not Found')
               })
             })
             it('400: returns a 400 status code, bad id is used when attempting to PATCH request', () => {
-              const votesObj = {inc_votes: '2'}
+              const votesObj = {inc_votes: 2}
               return supertest(app).patch('/api/articles/abc').send(votesObj).expect(400).then(res => {
                   const {msg} = res.body
                   expect(msg).toEqual('Bad Request')
@@ -434,6 +434,72 @@ describe("/api", () => {
                     expect(msg).toEqual('Not Found')
                 })
             })
+        })
+        describe('PATCH', () => {
+          it('200: returns a 200 status code, PATCH votes property by requested amount (increase) and returns the updated comment at the specified id', () => {
+            const votesobj = {inc_votes : 10 }
+            return supertest(app).patch('/api/comments/1').send(votesobj).expect(200).then(res => {
+              const {comment} = res.body
+              expect(comment).toMatchObject({
+                comment_id: 1,
+                body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+                votes: 26,
+                author: "butter_bridge",
+                article_id: 9,
+                created_at: '2020-04-06T12:17:00.000Z',
+              })
+            })
+          })
+          it('200: returns a 200 status code, PATCH votes property by requested amount (decrease) and returns the updated comment at the specified id', () => {
+            const votesobj = {inc_votes : -10 }
+            return supertest(app).patch('/api/comments/4').send(votesobj).expect(200).then(res => {
+              const {comment} = res.body
+              console.log(comment)
+              expect(comment).toMatchObject({
+                comment_id: 4,
+                body: " I carry a log — yes. Is it funny to you? It is not to me.",
+                votes: -110,
+                author: "icellusedkars",
+                article_id: 1,
+                created_at: '2020-02-23T12:01:00.000Z',
+              })
+            })
+          })
+          it('400: returns a 400 status code, no object property or property data is sent to the PATCH request', () => {
+            const votesobj = {}
+            return supertest(app).patch('/api/comments/1').send(votesobj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Missing value on NON NULL property')
+            })
+          })
+          it('400: returns a 400 status code, bad property name is sent to the PATCH request', () => {
+            const votesobj = {votes: 1}
+            return supertest(app).patch('/api/comments/1').send(votesobj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Missing value on NON NULL property')
+            })
+          })
+          it('400: returns a 400 status code, bad property data is sent to the PATCH request', () => {
+            const votesobj = {inc_votes: 'abc'}
+            return supertest(app).patch('/api/comments/1').send(votesobj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Bad Request')
+            })
+          })
+          it('404: returns a 404 status code, no id is found when attempting to PATCH request', () => {
+            const votesobj = {inc_votes: 1}
+            return supertest(app).patch('/api/comments/100000').send(votesobj).expect(404).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Not Found')
+            })
+          })
+          it('400: returns a 400 status code, bad id is used when attempting to PATCH request', () => {
+            const votesobj = {inc_votes: 1}
+            return supertest(app).patch('/api/comments/abcabc').send(votesobj).expect(400).then(res => {
+            const {msg} = res.body
+            expect(msg).toBe('Bad Request')
+            })
+          })
         })
     })
   })
