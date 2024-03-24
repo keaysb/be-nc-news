@@ -1,53 +1,73 @@
-Summary:
-This repository uses various endpoints to access different parts of the linked database and displays them in a particular ways by mainly using SQL queries. Please read through the README.md to understand how to properly use this repository.
+# [NC News API 📰](https://nc-news-1ldz.onrender.com)
+A RESTful API used as the back-end for [NC News](https://github.com/keaysb/nc-news). By using SQL queries and various frameworks, this API returns specific data requests through the use of endpoints.
 
-Hosted Version: https://nc-news-1ldz.onrender.com
+**[Hosted Version](https://nc-news-1ldz.onrender.com)**
 
-*** The website used to host this API automatically spins down with inactivity so loading the site and it's various pages may take a while. Please be patient.
-*** The homepage will show a 404 error. Use the endpoints to access the desired data (use the endpoint /api to see all current endpoints)
-*** Currently no front-end so use this extension to format the website in a readable way: https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en&pli=1 
+> * May take a while to load initially
+> * [All API endpoints](#api-endpoints)
+> * Use this [extension](https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en&pli=1) to improve API data readability
 
+## Tech Stack
+Main: JavaScript, Node.js, Express.js, PostgreSQL, ElephantSQL, Render
 
--Using Repository:
+Dev Dependencies: Supertest, Jest, jest-extended, jest-sorted and Pg-Format
 
+## [API Endpoints](https://nc-news-1ldz.onrender.com/api)
+**[All API endpoints](https://nc-news-1ldz.onrender.com/api)**
 
-Minimum Versions:
-This repository was created using Node.js v20.10.0 and PostgreSQL 14.10
+## Running Repository Locally
+### Minimum Requirements
+Node.js Version 20.9.0
 
---To connect the 2 databases locally:
-1. Create 2 .env files (one for the database which will hold test data and another for the database which will hold realistic development data) in the highest level of the repository. One called '.env.development' and another called '.env.test'.
+Check your node version by running the following command in your terminal:
+```
+node --version
+```
+PostgreSQL - version 14.10
 
-2. For the .env file assigned for development data, add the text 'PGDATABASE=nc_news'. This will be used to connect to one of the databases and will be seeded with the development data.
+### Step 1: Clone Repository
+```
+git clone https://github.com/keaysb/nc-news.git
+```
+### Step 2: Navigate to newly created project directory
+```
+cd nc-news
+```
+### Step 3: Install Dependencies
+```
+npm install
+```
+### Step 4: Create .env files
+In the root folder of the repository you will need to create 2 .env files.
 
-3. For the .env file assigned for test data, add the text 'PGDATABASE=nc_news_test'. This will be used to connect to one of the databases and will be seeded with the test data.
+Create a <code>.env.test</code> file in your root directory with the following content:
+```
+PGDATABASE=nc_news_test
+```
 
-These are the database names used when creating the databases when running setup.sql
+Create a <code>.env.development</code> file in your root directory with the following content:
+```
+PGDATABASE=nc_news
+```
 
+### Step 5: Seeding database
+Run the following commands to seed database:
+```
+// Setup Database
+npm run setup-dbs
 
---How to clone:
-Clone this repository to your local machine to use it.
-1. You should see a green button with '<> Code' on it. Select it and copy the 'HTTPS' Web URL or alternatively, copy this link: https://github.com/keaysb/be-nc-news.git
+// Seed Database
+npm run seed
+```
 
-2. Open your terminal and clone this repository preferably in a new folder by doing 'git clone <url>' where <url> is the repository you have copied
+## Testing
+To run tests, enter the following command:
+```
+npm test
+```
+This command will seed/re-seed <code>nc_news_test</code> database with test data
 
-3. Open this repository in your desired code editor (VSCode is my editor of choice)
+## Contact Me
+keays.b@yahoo.com
 
-
---Installing Dependencies
-1. To install dependencies, in your terminal run 'npm install'
-
-
---Seeding Local Database
-1. Run 'npm run setup-dbs' to setup the databases that will be used in this repository
-
-2. Run 'npm run seed' to seed the database nc_news with development data
-
-
---Run tests
-1. Run 'npm test' or 'npm t' to run the tests used in this repository
-
-2. Running this will automatically seed nc_news_test with test data which was used for testing
-
-If you are having any issues running this repository, email me at keays.b@yahoo.com
-
-
+[Linkedin](https://www.linkedin.com/in/bill-keays/)
