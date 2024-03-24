@@ -543,13 +543,11 @@ describe("/api", () => {
           });
           it("200: GET all comments from specific article id when no related comments", () => {
             return supertest(app)
-              .get("/api/articles/1/comments")
+              .get("/api/articles/2/comments")
               .expect(200)
               .then((res) => {
                 const { comments } = res.body;
-                expect(comments).toBeSortedBy("created_at", {
-                  descending: true,
-                });
+                expect(comments).toEqual([]);
               });
           });
           it("200: SORT all comments by date (DESC)", () => {
@@ -558,8 +556,11 @@ describe("/api", () => {
               .expect(200)
               .then((res) => {
                 const { comments } = res.body;
-                expect(comments).toEqual([]);
+                expect(comments).toBeSortedBy("created_at", {
+                  descending: true,
+                });
               });
+
           });
           it("400: Bad request when attempting to GET comments by article_id", () => {
             return supertest(app)
