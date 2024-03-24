@@ -65,7 +65,7 @@ To run tests, enter the following command:
 ```
 npm test
 ```
-This command will seed/re-seed <code>nc_news_test</code> database with test data
+This command will also seed/re-seed <code>nc_news_test</code> database with test data
 
 ## Contact Me
 keays.b@yahoo.com
