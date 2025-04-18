@@ -8,7 +8,7 @@ A RESTful API used as the back-end for [NC News](https://github.com/keaysb/nc-ne
 > * Use this [extension](https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa?hl=en&pli=1) to improve API data readability
 
 ## Tech Stack
-Main: JavaScript, Node.js, Express.js, PostgreSQL, ElephantSQL, Render
+Main: JavaScript, Node.js, Express.js, PostgreSQL, Supabase, Render
 
 Dev Dependencies: Supertest, Jest, jest-extended, jest-sorted and Pg-Format
 
